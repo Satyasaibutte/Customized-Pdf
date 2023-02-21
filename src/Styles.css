@@ -1,0 +1,34 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .block {
+    background: skyblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    /* height: 7% !important; */
+    /* width: 11% !important; */
+  }
+  .createBlock {
+    background: skyblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2% !important;
+    width: 10%;
+  }
+  .static {
+    background: blue;
+  }
+  .droppable-element {
+    height: 50px;
+    width: 190px;
+    background: skyblue;
+    margin: 10px;
+    border: 2px dashed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
