@@ -1,10 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 import Custom from './custom';
+import DragFromOutsideLayout from "./DragFromOutsideLayout"
 
 function App() {
   return (
-   <Custom/>
+   <div>
+    <DragFromOutsideLayout/>
+   </div>
   );
 }
 
