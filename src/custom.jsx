@@ -6,6 +6,7 @@ function Custom() {
     <div>
       <h2>Satya</h2>
       <h2>Abhi changes</h2>
+      <h1>Vinodh bro</h1>
   </div>
   )
 }
