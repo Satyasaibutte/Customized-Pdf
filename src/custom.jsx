@@ -1,14 +1,13 @@
-import { Box } from 'antd';
-import './App.css';
+import { Box } from "antd";
+import "./App.css";
 
 function Custom() {
   return (
     <div>
-      <h2>Satykjdwcyua</h2>
-      <h2>Abhi shelkdkjc</h2>
-
-  </div>
-  )
+      <h2>Satya sai butte</h2>
+      <h2>A</h2>
+    </div>
+  );
 }
 
 export default Custom;
