@@ -1,5 +1,5 @@
-import { Box } from 'antd';
-import './App.css';
+import { Box } from "antd";
+import "./App.css";
 
 function Custom() {
   return (
