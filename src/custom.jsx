@@ -5,7 +5,7 @@ function Custom() {
   return (
     <div>
       <h2>Satya sai butte</h2>
-      <h2>Abhishek bro</h2>
+      <h2>Abhi</h2>
 
   </div>
   )
