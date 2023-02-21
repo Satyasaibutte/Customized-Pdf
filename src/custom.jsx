@@ -4,8 +4,8 @@ import './App.css';
 function Custom() {
   return (
     <div>
-      <h2>Satya</h2>
-      <h2>Abhi</h2>
+      <h2>Satykjdwcyua</h2>
+      <h2>Abhi shelkdkjc</h2>
 
   </div>
   )
