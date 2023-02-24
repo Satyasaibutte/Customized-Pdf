@@ -63,6 +63,34 @@ export default function DragFromOutsideLayout(props) {
     }
     return typeValue;
   };
+  // const base64ToPdf = (base64, fileName) => {
+  //   var link = document.createElement("a");
+  //   link.href = "data:application/pdf;base64," + base64;
+  //   link.download = fileName || "label.pdf";
+  //   link.click();
+  // };
+
+  // printBol = () => {
+  //   this.setState({
+  //     isGeneratingPdf: true,
+  //   });
+  //   fetchBolPdf(this.state.currentOrder.id)
+  //     .then((result) => {
+  //       if (result.success) {
+  //         base64ToPdf(
+  //           result.bol_file,
+  //           `OrderBol${this.state.currentOrder.id}.pdf`
+  //         );
+  //       } else {
+  //         console.log("failed to generate pdf");
+  //       }
+  //     })
+  //     .finally(() => {
+  //       this.setState({
+  //         isGeneratingPdf: false,
+  //       });
+  //     });
+  // };
 
   const onDrop = (elemParams) => {
     console.log("param:::", elemParams);
