@@ -12,6 +12,4 @@ export const dragApi ={
             .then((response) => response.json()) 
         });
       },
-    
-    
 }
