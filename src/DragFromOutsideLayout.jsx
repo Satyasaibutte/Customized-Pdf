@@ -3,10 +3,23 @@ import RGL, { Responsive, WidthProvider } from "react-grid-layout";
 import "./Styles.css";
 import "/node_modules/react-grid-layout/css/styles.css";
 import "/node_modules/react-resizable/css/styles.css";
-import { Input, Row, Col, Mentions } from "antd";
+import { dragApi } from "./drag";
+import {
+  Input,
+  Row,
+  Col,
+  Mentions,
+  Alert,
+  Button,
+  Icon,
+  Select,
+  Divider,
+} from "antd";
 import _ from "lodash";
+import FormItem from "antd/lib/form/FormItem";
 import "antd/dist/antd.css";
 import Token from "./Token";
+// import alertMessage from "./common";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const ReactGridLayout = WidthProvider(RGL);
 const { Option } = Mentions;
@@ -16,11 +29,13 @@ export default function DragFromOutsideLayout(props) {
   const [draggedFrom, setDraggedFrom] = useState("");
   const [draggedToken, setDraggedToken] = useState("");
   const [MappingTokens, setMappingTokens] = useState(Token.MappingTokens);
+  const [isNewLabel, setIsNewLabel] = useState(false);
+  const [font_name, setFontName] = useState("Courier");
+  const [font_size, setFontSize] = useState(10);
+  const [font_weight, setFontWeight] = useState("normal");
+  const [dataSource,setDataSource] = useState("");
   const [layout, setlayout] = useState([
     { i: "a", x: 0, y: 0, w: 15, h: 1, static: true },
-    // { i: "b", x: 1, y: 0, w: 3, h: 2 },
-    // { i: "c", x: 4, y: 0, w: 1, h: 2 },
-    // { i: "d", x: 0, y: 2, w: 1, h: 2 }
   ]);
   const [currentProccessedIndex, setCurrentProcessedIndex] = useState(-1);
   const [disableDrag, setDisableDrag] = useState(false);
@@ -31,20 +46,17 @@ export default function DragFromOutsideLayout(props) {
     cursor: "pointer",
   };
 
-  // const onLayoutChange = (nlayout, alayouts) => {
-  //   setlayout(nlayout);
-  //   // const loi = _.findIndex(alayouts, { i: layout.i });
-  //   // if (loi >= 0) {
-  //   //   setlayout([...alayouts, { ...nlayout }]);
-  //   // }
-  // };
-
   useEffect(() => {
     setmounted(true);
   }, []);
 
   const getTypeValue = (key) => {
-    let typeValue = {};
+    const style = {
+      // font_name: font_name,
+      font_size: font_size,
+      font_weight: font_weight,
+    };
+    let typeValue = { style };
     switch (key) {
       case "tokenScreen":
         typeValue.type = "token";
@@ -63,34 +75,6 @@ export default function DragFromOutsideLayout(props) {
     }
     return typeValue;
   };
-  // const base64ToPdf = (base64, fileName) => {
-  //   var link = document.createElement("a");
-  //   link.href = "data:application/pdf;base64," + base64;
-  //   link.download = fileName || "label.pdf";
-  //   link.click();
-  // };
-
-  // printBol = () => {
-  //   this.setState({
-  //     isGeneratingPdf: true,
-  //   });
-  //   fetchBolPdf(this.state.currentOrder.id)
-  //     .then((result) => {
-  //       if (result.success) {
-  //         base64ToPdf(
-  //           result.bol_file,
-  //           `OrderBol${this.state.currentOrder.id}.pdf`
-  //         );
-  //       } else {
-  //         console.log("failed to generate pdf");
-  //       }
-  //     })
-  //     .finally(() => {
-  //       this.setState({
-  //         isGeneratingPdf: false,
-  //       });
-  //     });
-  // };
 
   const onDrop = (elemParams) => {
     console.log("param:::", elemParams);
@@ -100,6 +84,7 @@ export default function DragFromOutsideLayout(props) {
       y: elemParams.y,
       w: elemParams.w,
       h: elemParams.h,
+      style: {},
     };
     // if (draggedFrom === "tokenScreen") {
     //   ele.type = "token";
@@ -109,10 +94,11 @@ export default function DragFromOutsideLayout(props) {
     //   ele.type = "barcode";
     //   ele.value = "";
     // }
-    if (draggedFrom === "labelScreen") {
+    if (draggedFrom === "labelScreen" || draggedFrom === "barcode") {
       setCurrentProcessedIndex(layout.length);
     }
     const typeValue = getTypeValue(draggedFrom);
+    setIsNewLabel(true);
     setlayout([...layout, { ...ele, ...typeValue }]);
     setDisableDrag(true);
     setDraggedToken("");
@@ -121,7 +107,11 @@ export default function DragFromOutsideLayout(props) {
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Enter") {
-      handleSave(index);
+      if (layout[index].value) {
+        handleSave(index);
+      } else {
+        // alertMessage("Please Add Label!!!", "error");
+      }
     }
   };
 
@@ -130,6 +120,7 @@ export default function DragFromOutsideLayout(props) {
     const currentData = Object.assign({}, Layout[index]);
     setCurrentProcessedIndex(-1);
     setDisableDrag(false);
+    setIsNewLabel(false);
   };
   const handleOnchange = (index, type, element, value) => {
     // console.log(index, element, value);
@@ -158,6 +149,7 @@ export default function DragFromOutsideLayout(props) {
           y: newItem.y,
           type: existingItem.type,
           value: existingItem.value,
+          style: { ...existingItem.style },
         };
       }
       return layout[index];
@@ -175,6 +167,7 @@ export default function DragFromOutsideLayout(props) {
           y: newItem.y,
           type: existingItem.type,
           value: existingItem.value,
+          style: { ...existingItem.style },
         };
       }
       return layout[index];
@@ -189,16 +182,33 @@ export default function DragFromOutsideLayout(props) {
     console.log("updatedLayout", updatedLayout);
     setlayout(updatedLayout);
   };
+  
+  const handleDownloadPdf= async()=> {
+    const filteredLayout = layout.filter((record, index) => index !== 0);
+    const payload = {
+      font_name: font_name,
+      grids: filteredLayout,
+    };
+    const response = await dragApi.create(payload)
+    setDataSource(response)
+  }
+
+  // useEffect(()=> {
+  //   handleDownloadPdf()
+  // })
 
   return (
     <div>
+      <Row className="page-header">
+        <Col style={{ textAlign: "left" }}>PDF Generate</Col>
+      </Row>
       <Row gutter={8}>
         <Col xs={24} sm={24} md={24} lg={24}>
           <Row gutter={32}>
             <Col xs={6} sm={6} md={6} lg={4}>
               <div
                 style={{
-                  height: 821,
+                  height: "94vh",
                   overflowY: "auto",
                   padding: 5,
                   border: "1px solid #CCC",
@@ -206,21 +216,27 @@ export default function DragFromOutsideLayout(props) {
                   paddingBottom: 15,
                 }}
               >
-                <div
-                  className="droppable-element"
-                  draggable={true}
-                  unselectable="on"
-                  // this is a hack for firefox
-                  // Firefox requires some kind of initialization
-                  // which we can do by adding this attribute
-                  // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
-                  onDragStart={(e) => {
-                    setDraggedFrom("labelScreen");
-                    e.dataTransfer.setData("text/plain", "");
-                  }}
-                >
-                  Label
+                <div>
+                  <h1 className="labelHeading">Labels</h1>
                 </div>
+                {!isNewLabel && (
+                  <div
+                    className="droppable-element"
+                    draggable={true}
+                    unselectable="on"
+                    // this is a hack for firefox
+                    // Firefox requires some kind of initialization
+                    // which we can do by adding this attribute
+                    // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+                    onDragStart={(e) => {
+                      setDraggedFrom("labelScreen");
+                      // setIsNewLabel(false);
+                      e.dataTransfer.setData("text/plain", "");
+                    }}
+                  >
+                    Label
+                  </div>
+                )}
                 <div
                   className="droppable-element"
                   draggable={true}
@@ -233,12 +249,122 @@ export default function DragFromOutsideLayout(props) {
                     setDraggedFrom("barcode");
                     e.dataTransfer.setData("text/plain", "");
                   }}
+                  disableDrag={isNewLabel}
                 >
                   Barcode
                 </div>
               </div>
             </Col>
             <Col xs={12} sm={12} md={12} lg={16}>
+              <Row>
+                <Col sm={8} xs={8} md={8} lg={8}>
+                  <div
+                    style={{
+                      borderRight: "solid",
+                      borderRightColor: "#e8e8e8",
+                      // width: 200,
+                      height: 105,
+                    }}
+                  >
+                    <Col sm={22} xs={22} md={22} lg={22}>
+                      <FormItem label="Font Name">
+                        <Select
+                          value={font_name}
+                          showSearch
+                          style={{ width: "70%" }}
+                          filterOption={(input, option) =>
+                            option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                          onChange={(e) => setFontName(e)}
+                        >
+                          <Option value="Times-Roman">Times Roman</Option>
+                          <Option value="Helvetica">Helvetica</Option>
+                          <Option value="Courier">Courier</Option>
+                        </Select>
+                      </FormItem>
+                    </Col>
+                  </div>
+                </Col>
+                <Col sm={16} xs={16} md={16} lg={16}>
+                  <Row gutter={12}>
+                    <Col
+                      sm={24}
+                      xs={24}
+                      md={12}
+                      lg={7}
+                      span={8}
+                      style={{ marginLeft: 60 }}
+                    >
+                      <FormItem label="Font Size">
+                        <Select
+                          value={font_size}
+                          showSearch
+                          style={{ width: "100%" }}
+                          filterOption={(input, option) =>
+                            option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                          onChange={(e) => setFontSize(e)}
+                        >
+                          <Option value={8}>8</Option>
+                          <Option value={10}>10</Option>
+                          <Option value={12}>12</Option>
+                          <Option value={14}>14</Option>
+                          <Option value={16}>16</Option>
+                          <Option value={18}>18</Option>
+                        </Select>
+                      </FormItem>
+                    </Col>
+                    <Col
+                      sm={24}
+                      xs={24}
+                      md={12}
+                      lg={7}
+                      span={8}
+                      style={{ marginLeft: 25 }}
+                    >
+                      <FormItem label="Font Weight">
+                        <Select
+                          value={font_weight}
+                          showSearch
+                          style={{ width: "100%" }}
+                          filterOption={(input, option) =>
+                            option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                          onChange={(e) => setFontWeight(e)}
+                        >
+                          <Option value="normal">Normal</Option>
+                          <Option value="bold">Bold</Option>
+                          <Option value="italic">Italic</Option>
+                        </Select>
+                      </FormItem>
+                    </Col>
+                    <Col
+                      sm={24}
+                      xs={24}
+                      md={12}
+                      lg={3}
+                      style={{ marginTop: 20, marginLeft: 50 }}
+                    >
+                      <Icon />
+                      {/* <Icon type="cloud-download" /> */}
+                      <Button
+                        icon="download"
+                        type="primary"
+                        onClick={() => handleDownloadPdf("pdf")}
+                      >
+                        PDF
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+
               <ResponsiveReactGridLayout
                 // {...this.props}
                 rowHeight={30}
@@ -258,17 +384,19 @@ export default function DragFromOutsideLayout(props) {
                 isDroppable={true}
                 verticalCompact={false}
                 resizeHandles={["ne", "se", "sw", "nw"]}
-                // droppingItem={{ i: "xx", h: 2, w: 2 }}
+                // height={600}
+                droppingItem={{ i: "xx", h: 2, w: 2 }}
               >
                 {layout.map((itm, i) => {
                   const isEditable = currentProccessedIndex === i;
-                  console.log("isEditable:::", i);
+                  console.log("isEditable:::", isEditable);
                   return (
                     <div key={itm.i} data-grid={itm} className="block">
                       {/* {i} */}
                       {draggedFrom === "labelScreen" ? (
                         isEditable ? (
                           <Input
+                            autoFocus
                             size="small"
                             placeholder="Input Element"
                             onKeyDown={(e) => handleKeyDown(i, e)}
@@ -286,25 +414,57 @@ export default function DragFromOutsideLayout(props) {
                         ) : (
                           <Fragment>{itm.value}</Fragment>
                         )
+                      ) : draggedFrom === "barcode" ? (
+                        isEditable ? (
+                          <Mentions
+                            style={{ width: "100%", margin: 15 }}
+                            placeholder="Select Mention"
+                            onKeyDown={(e) => handleKeyDown(i, e)}
+                            value={itm.value}
+                            onChange={(e) =>
+                              handleOnchange(
+                                i,
+                                "barcode",
+                                "value",
+                                e.target.value
+                              )
+                            }
+                           
+                          >
+                            {MappingTokens.map((token, index) => (
+                              <Option
+                                key={`option${token.code}${index}`}
+                                value={token.code}
+                              >
+                                {token.code}
+                              </Option>
+                            ))}
+                          </Mentions>
+                        ) : (
+                          <Fragment>{itm.value}</Fragment>
+                        )
                       ) : (
                         <Fragment>{itm.value}</Fragment>
                       )}
-                      <span
-                        // className="remove"
-                        style={removeStyle}
-                        onClick={() => onRemoveItem(itm.i)}
-                      >
-                        x
-                      </span>
+                      {i != 0 && (
+                        <span
+                          // className="remove"
+                          style={removeStyle}
+                          onClick={() => onRemoveItem(itm.i)}
+                        >
+                          x
+                        </span>
+                      )}
                     </div>
                   );
                 })}
               </ResponsiveReactGridLayout>
             </Col>
+
             <Col xs={6} sm={6} md={6} lg={4}>
               <div
                 style={{
-                  height: 821,
+                  height: "94vh",
                   overflowY: "auto",
                   padding: 5,
                   border: "1px solid #CCC",
@@ -312,9 +472,12 @@ export default function DragFromOutsideLayout(props) {
                   paddingBottom: 15,
                 }}
               >
+                <div className="tokenHeading">
+                  <h1>Tokens</h1>
+                </div>
                 {MappingTokens.map((token, index) => (
                   <div
-                    className="droppable-element"
+                    className="token-elements "
                     draggable={true}
                     unselectable="on"
                     // this is a hack for firefox

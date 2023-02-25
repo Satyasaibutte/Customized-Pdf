@@ -1,34 +1,84 @@
 .App {
-    font-family: sans-serif;
-    text-align: center;
-  }
-  .block {
-    background: skyblue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
-    /* height: 7% !important; */
-    /* width: 11% !important; */
-  }
-  .createBlock {
-    background: skyblue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 2% !important;
-    width: 10%;
-  }
-  .static {
-    background: blue;
-  }
-  .droppable-element {
-    height: 50px;
-    width: 190px;
-    background: skyblue;
-    margin: 10px;
-    border: 2px dashed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  font-family: sans-serif;
+  text-align: center;
+}
+.block {
+  background: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* height: 7% !important; */
+  /* width: 11% !important; */
+}
+.createBlock {
+  background: skyblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2% !important;
+  width: 10%;
+}
+.static {
+  background: rgb(137, 201, 145);
+}
+.droppable-element {
+  height: 50px;
+  width: 190px;
+  background: rgb(142, 212, 208);
+  margin: 10px;
+  border: 2px dashed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.token-elements {
+  height: 50px;
+  width: 190px;
+  background: rgb(59, 158, 228);
+  margin: 10px;
+  border: 1px dashed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pdfButton {
+  color: "blue";
+  background-color: rgb(173, 42, 9);
+}
+.labelHeading {
+  color: coral;
+  text-align: center;
+  font-weight: bold;
+}
+.tokenHeading {
+  color: rgb(3, 48, 132);
+  text-align: center;
+  font-weight: bolder;
+}
+.page-header {
+  background-color: #6fc27c;
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 0px;
+  padding: 13px 10px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.17px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
