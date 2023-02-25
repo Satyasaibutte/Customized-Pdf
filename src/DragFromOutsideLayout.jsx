@@ -472,8 +472,8 @@ export default function DragFromOutsideLayout(props) {
                   paddingBottom: 15,
                 }}
               >
-                <div className="tokenHeading">
-                  <h1>Tokens</h1>
+                <div>
+                  <h1 className="tokenHeading">Tokens</h1>
                 </div>
                 {MappingTokens.map((token, index) => (
                   <div
