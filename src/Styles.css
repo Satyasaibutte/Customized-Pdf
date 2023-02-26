@@ -25,7 +25,7 @@
 .droppable-element {
   height: 50px;
   width: 190px;
-  background: rgb(142, 212, 208);
+  background: rgb(151, 191, 217);
   font-weight: bold;
   margin: 10px;
   font-size: medium;
@@ -40,12 +40,11 @@
   width: 190px;
   background: rgb(59, 158, 228);
   margin: 10px;
-  font-size: medium;
   border: 1px dashed;
-  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: medium;
 }
 .pdfButton {
   color: "blue";
@@ -57,14 +56,14 @@
   font-weight: bold;
 }
 .tokenHeading {
+  color: rgb(3, 48, 132);
   text-align: center;
-  font-weight: bold;
-  color: rgb(20, 212, 212);
+  font-weight: bolder;
 }
 .page-header {
+  /* background-color: #6fc27c; */
   background-color: rgb(104, 172, 159);
   color: black;
-  font-weight: bold;
   font-size: 18px;
   margin-bottom: 0px;
   padding: 13px 10px;
@@ -77,14 +76,8 @@
   display: flex;
   align-items: center;
   text-align: center;
+  font-weight: bold;
 }
-
-
-
-
-
-
-
-
-
-
+.fontBold {
+  font-weight: 600;
+}
