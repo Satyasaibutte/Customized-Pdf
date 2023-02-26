@@ -5,7 +5,7 @@ export const dragApi ={
             method: "POST",
             body: JSON.stringify(data),
             headers: {
-              "Content-type": "application/json; charset=UTF-8",
+              'Content-Type': 'application/x-www-form-urlencoded',
             },
             mode: "no-cors"
           })
